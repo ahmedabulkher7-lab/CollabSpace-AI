@@ -16,13 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('google_id')->nullable()->index();
+            $table->string('facebook_id')->nullable()->index();
+            $table->string('linkedin_id')->nullable()->index();
             $table->string('job_title')->nullable();
             $table->unsignedInteger('years_of_experience')->default(0);
             $table->string('phone')->nullable();
             $table->string('avatar_url')->nullable();
             $table->string('status')->default('active'); // active, inactive
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

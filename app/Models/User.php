@@ -17,6 +17,8 @@ use Spatie\Permission\Traits\HasRoles;
     'name',
     'email',
     'google_id',
+    'facebook_id',
+    'linkedin_id',
     'password',
     'job_title',
     'years_of_experience',
