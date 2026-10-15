@@ -9,6 +9,7 @@ use App\Enums\ProjectStatus;
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Enums\UserRole;
+use App\Models\AiSetting;
 use App\Models\AuditLog;
 use App\Models\FileAttachment;
 use App\Models\Meeting;
@@ -344,6 +345,47 @@ class DatabaseSeeder extends Seeder
             'ip_address' => '127.0.0.1',
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
             'payload' => ['project_id' => $project1->id, 'name' => $project1->name],
+        ]);
+
+        // 10. Seed Default AI Settings (Configured by Administrator)
+        AiSetting::create([
+            'key' => 'ai_provider',
+            'value' => 'gemini',
+            'type' => 'string',
+            'description' => 'Primary AI model provider for CollabSpace',
+            'updated_by' => $admin->id,
+        ]);
+
+        AiSetting::create([
+            'key' => 'ai_model',
+            'value' => 'gemini-1.5-pro',
+            'type' => 'string',
+            'description' => 'Active LLM model version',
+            'updated_by' => $admin->id,
+        ]);
+
+        AiSetting::create([
+            'key' => 'ai_temperature',
+            'value' => '0.7',
+            'type' => 'string',
+            'description' => 'AI creativity and variability temperature',
+            'updated_by' => $admin->id,
+        ]);
+
+        AiSetting::create([
+            'key' => 'ai_features_enabled',
+            'value' => json_encode(['meeting_summary', 'project_insights', 'task_recommendations', 'smart_search']),
+            'type' => 'json',
+            'description' => 'Active AI features in platform',
+            'updated_by' => $admin->id,
+        ]);
+
+        AiSetting::create([
+            'key' => 'ai_enabled',
+            'value' => '1',
+            'type' => 'boolean',
+            'description' => 'Global toggle for AI Assistant capabilities',
+            'updated_by' => $admin->id,
         ]);
     }
 }

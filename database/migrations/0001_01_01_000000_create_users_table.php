@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('google_id')->nullable()->index();
             $table->string('job_title')->nullable();
             $table->unsignedInteger('years_of_experience')->default(0);
             $table->string('phone')->nullable();

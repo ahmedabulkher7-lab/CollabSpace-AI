@@ -16,6 +16,7 @@ use Spatie\Permission\Traits\HasRoles;
 #[Fillable([
     'name',
     'email',
+    'google_id',
     'password',
     'job_title',
     'years_of_experience',
