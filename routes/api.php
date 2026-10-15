@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
+use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,13 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('teams', TeamController::class);
         Route::post('teams/{team}/members', [TeamController::class, 'assignMembers']);
         Route::delete('teams/{team}/members/{user}', [TeamController::class, 'removeMember']);
+
+        // Projects Module
+        Route::apiResource('projects', ProjectController::class);
+        Route::get('projects/{project}/overview', [ProjectController::class, 'overview']);
+        Route::get('projects/{project}/teams', [ProjectController::class, 'teams']);
+        Route::post('projects/{project}/teams', [ProjectController::class, 'assignTeams']);
+        Route::delete('projects/{project}/teams/{team}', [ProjectController::class, 'removeTeam']);
     });
 
 });
