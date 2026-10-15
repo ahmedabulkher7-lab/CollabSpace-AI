@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
 use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,12 @@ Route::prefix('v1')->group(function () {
         Route::get('projects/{project}/teams', [ProjectController::class, 'teams']);
         Route::post('projects/{project}/teams', [ProjectController::class, 'assignTeams']);
         Route::delete('projects/{project}/teams/{team}', [ProjectController::class, 'removeTeam']);
+
+        // Tasks & Kanban Module
+        Route::get('projects/{project}/tasks/kanban', [TaskController::class, 'kanban']);
+        Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
+        Route::patch('tasks/{task}/assign', [TaskController::class, 'assign']);
+        Route::apiResource('tasks', TaskController::class);
     });
 
 });

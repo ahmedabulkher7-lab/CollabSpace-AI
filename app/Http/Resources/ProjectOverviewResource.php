@@ -65,7 +65,18 @@ class ProjectOverviewResource extends JsonResource
                 'direct_members' => $this->directMembers()->count(),
             ],
             'teams' => TeamResource::collection($this->whenLoaded('teams')),
-            'direct_members' => UserResource::collection($this->whenLoaded('directMembers')),
+            'direct_members' => $this->whenLoaded('directMembers', function () {
+                return $this->directMembers->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'avatar_url' => $user->avatar_url,
+                        'job_title' => $user->job_title,
+                        'role' => $user->pivot?->role ?? 'Contributor',
+                    ];
+                });
+            }),
             'created_by' => $this->created_by,
             'creator' => $this->whenLoaded('creator', function () {
                 return [

@@ -25,6 +25,7 @@ use Spatie\Permission\Traits\HasRoles;
     'phone',
     'avatar_url',
     'status',
+    'email_verified_at',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

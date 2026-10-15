@@ -48,7 +48,7 @@ class AuthService
             $token = $user->createToken('collabspace_auth_token')->plainTextToken;
 
             return [
-                'user' => $user,
+                'user' => $user->load(['roles', 'permissions']),
                 'token' => $token,
             ];
         });
@@ -90,7 +90,7 @@ class AuthService
         $token = $user->createToken('collabspace_auth_token')->plainTextToken;
 
         return [
-            'user' => $user,
+            'user' => $user->load(['roles', 'permissions']),
             'token' => $token,
         ];
     }
