@@ -30,9 +30,6 @@ class AuthTest extends TestCase
             'email' => 'john.doe@example.com',
             'password' => 'secret1234',
             'password_confirmation' => 'secret1234',
-            'job_title' => 'Software Engineer',
-            'years_of_experience' => 3,
-            'phone' => '+201112223334',
         ];
 
         $response = $this->postJson('/api/v1/auth/register', $payload);

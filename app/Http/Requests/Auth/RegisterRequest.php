@@ -26,9 +26,6 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'job_title' => ['nullable', 'string', 'max:255'],
-            'years_of_experience' => ['nullable', 'integer', 'min:0'],
-            'phone' => ['nullable', 'string', 'max:30'],
         ];
     }
 }
