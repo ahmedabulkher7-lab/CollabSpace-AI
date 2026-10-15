@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
+use App\Http\Controllers\Api\V1\TeamController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +27,7 @@ Route::prefix('v1')->group(function () {
             Route::match(['get', 'post'], '/callback', [SocialAuthController::class, 'callback']);
         });
 
-        // Protected Endpoints
+        // Protected Auth Endpoints
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [AuthController::class, 'logout']);
             Route::get('/me', [ProfileController::class, 'me']);
@@ -35,6 +36,14 @@ Route::prefix('v1')->group(function () {
             Route::get('/profile/tasks', [ProfileController::class, 'tasks']);
             Route::get('/profile/files', [ProfileController::class, 'files']);
         });
+    });
+
+    // Protected Domain Modules
+    Route::middleware('auth:sanctum')->group(function () {
+        // Teams Module
+        Route::apiResource('teams', TeamController::class);
+        Route::post('teams/{team}/members', [TeamController::class, 'assignMembers']);
+        Route::delete('teams/{team}/members/{user}', [TeamController::class, 'removeMember']);
     });
 
 });
