@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
+use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TeamController;
@@ -59,6 +60,14 @@ Route::prefix('v1')->group(function () {
         Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
         Route::patch('tasks/{task}/assign', [TaskController::class, 'assign']);
         Route::apiResource('tasks', TaskController::class);
+
+        // Meetings & AI Summaries Module
+        Route::patch('meetings/{meeting}/attendance', [MeetingController::class, 'markAttendance']);
+        Route::post('meetings/{meeting}/summary/generate', [MeetingController::class, 'generateSummary']);
+        Route::get('meetings/{meeting}/summary', [MeetingController::class, 'showSummary']);
+        Route::put('meetings/{meeting}/summary', [MeetingController::class, 'updateSummary']);
+        Route::post('meetings/{meeting}/summary/create-tasks', [MeetingController::class, 'createTasksFromSummary']);
+        Route::apiResource('meetings', MeetingController::class);
     });
 
 });

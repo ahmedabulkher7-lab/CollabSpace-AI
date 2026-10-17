@@ -53,4 +53,9 @@ return [
         'redirect' => env('LINKEDIN_REDIRECT_URI', 'http://127.0.0.1:8000/api/v1/auth/social/linkedin/callback'),
     ],
 
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-1.5-flash'),
+    ],
+
 ];

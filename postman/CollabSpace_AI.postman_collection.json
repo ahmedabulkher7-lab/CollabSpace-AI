@@ -1552,6 +1552,444 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "6. Meetings & AI Summaries",
+			"item": [
+				{
+					"name": "List Meetings (with filters)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings?project_id=1&time_filter=upcoming&per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings"
+							],
+							"query": [
+								{
+									"key": "project_id",
+									"value": "1"
+								},
+								{
+									"key": "time_filter",
+									"value": "upcoming"
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Schedule Meeting",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Sprint 3 Review & AI Architecture\",\n    \"description\": \"Review deliverable velocity, WebSocket integration, and database indexing benchmarks.\",\n    \"meeting_date\": \"2026-10-22\",\n    \"start_time\": \"14:00:00\",\n    \"end_time\": \"15:30:00\",\n    \"meeting_link\": \"https://meet.google.com/xyz-collab-ai\",\n    \"project_id\": 1,\n    \"participants\": [2, 3, 4]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meeting Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Meeting / Reschedule",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Sprint 3 Review (Rescheduled)\",\n    \"meeting_date\": \"2026-10-23\",\n    \"start_time\": \"15:00:00\",\n    \"end_time\": \"16:30:00\",\n    \"meeting_link\": \"https://meet.google.com/xyz-collab-new\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Attendance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"attendance\": [\n        {\"user_id\": 2, \"attended\": true},\n        {\"user_id\": 3, \"attended\": true},\n        {\"user_id\": 4, \"attended\": false}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1/attendance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1",
+								"attendance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate AI Meeting Summary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"transcript\": \"Tarek presented the API database indexing benchmark. Alex proposed finalizing the Figma UI components by Wednesday. The team decided to adopt MySQL 8.0 with automated migrations. Next meeting is scheduled for Monday.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1/summary/generate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1",
+								"summary",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meeting Summary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Meeting Summary Manually",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"summary\": \"Refined executive summary after PM and Tech Lead review.\",\n    \"decisions_made\": [\n        \"Adopt MySQL 8.0 with InnoDB cluster.\",\n        \"Deploy staging environment on Friday.\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Convert Summary Action Items to Kanban Tasks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"default_priority\": \"High\",\n    \"default_due_date\": \"2026-10-28\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1/summary/create-tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1",
+								"summary",
+								"create-tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Meeting",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/meetings/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"meetings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
