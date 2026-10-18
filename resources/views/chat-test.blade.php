@@ -122,11 +122,14 @@
             }
 
             // Configure Pusher client pointing to local Laravel Reverb server
+            Pusher.logToConsole = true;
             pusherInstance = new Pusher('collabspace-key', {
-                wsHost: '127.0.0.1',
+                wsHost: window.location.hostname || '127.0.0.1',
                 wsPort: 8080,
                 wssPort: 8080,
                 forceTLS: false,
+                disableStats: true,
+                cluster: 'mt1',
                 enabledTransports: ['ws', 'wss'],
                 authEndpoint: '/api/v1/broadcasting/auth',
                 auth: {
@@ -137,17 +140,26 @@
                 }
             });
 
+            pusherInstance.connection.bind('connected', () => {
+                console.log('WebSocket connection to Reverb established successfully.');
+            });
+
+            pusherInstance.connection.bind('error', (err) => {
+                console.error('Pusher connection error:', err);
+            });
+
             const channelName = 'private-projects.' + projectId;
             activeChannel = pusherInstance.subscribe(channelName);
 
             activeChannel.bind('pusher:subscription_succeeded', () => {
                 updateStatus(true);
                 const empty = document.getElementById('emptyState');
-                if (empty) empty.innerHTML = '<p class="text-sm text-emerald-400 font-medium">Subscribed to channel: ' + channelName + '. Waiting for messages...</p>';
+                if (empty) empty.innerHTML = '<p class="text-sm text-emerald-400 font-medium">✓ Subscribed to ' + channelName + ' in real-time. Ready to receive messages!</p>';
             });
 
             activeChannel.bind('pusher:subscription_error', (status) => {
-                alert('Authentication failed for channel. Please verify your token and project access.');
+                console.error('Subscription error status:', status);
+                alert('Authentication failed for channel (' + (status.status || status) + '). Check console.');
                 updateStatus(false);
             });
 
