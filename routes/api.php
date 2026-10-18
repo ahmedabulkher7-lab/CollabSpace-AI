@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
 use App\Http\Controllers\Api\V1\FileController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\ProjectMessageController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TeamController;
 use Illuminate\Support\Facades\Route;
@@ -73,6 +74,14 @@ Route::prefix('v1')->group(function () {
         // File Management Module
         Route::get('files/{file}/download', [FileController::class, 'download']);
         Route::apiResource('files', FileController::class);
+
+        // Real-Time Project Chat Module
+        Route::get('projects/{project}/messages', [ProjectMessageController::class, 'index']);
+        Route::post('projects/{project}/messages', [ProjectMessageController::class, 'store']);
+        Route::put('messages/{message}', [ProjectMessageController::class, 'update']);
+        Route::delete('messages/{message}', [ProjectMessageController::class, 'destroy']);
+        Route::post('projects/{project}/messages/read', [ProjectMessageController::class, 'markRead']);
+        Route::get('projects/{project}/messages/unread-count', [ProjectMessageController::class, 'unreadCount']);
     });
 
 });
