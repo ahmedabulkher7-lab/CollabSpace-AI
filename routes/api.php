@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
+use App\Http\Controllers\Api\V1\FileController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\TaskController;
@@ -68,6 +69,10 @@ Route::prefix('v1')->group(function () {
         Route::put('meetings/{meeting}/summary', [MeetingController::class, 'updateSummary']);
         Route::post('meetings/{meeting}/summary/create-tasks', [MeetingController::class, 'createTasksFromSummary']);
         Route::apiResource('meetings', MeetingController::class);
+
+        // File Management Module
+        Route::get('files/{file}/download', [FileController::class, 'download']);
+        Route::apiResource('files', FileController::class);
     });
 
 });
