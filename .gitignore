@@ -9,6 +9,13 @@
 .phpunit.result.cache
 /.codex
 /.cursor/
+/.claude/
+/.gemini/
+/.agents/
+/CLAUDE.md
+/AGENTS.md
+/boost.json
+/.mcp.json
 /.idea
 /.nova
 /.phpunit.cache
