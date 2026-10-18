@@ -111,64 +111,114 @@ PROMPT;
 
     /**
      * Local intelligent generator when offline or in test environments.
+     * Parses the transcript text dynamically to extract decisions, action items, and risks.
      *
      * @param  array<string>  $memberNames
      * @return array<string, mixed>
      */
     protected function generateLocalStructuredSummary(string $transcript, string $projectName, array $memberNames): array
     {
+        $lines = preg_split('/(?<=[.?!;])\s+|\r\n|\n|\r/', trim($transcript));
+        $lines = array_filter(array_map('trim', $lines ?: []), fn ($line) => strlen($line) > 5);
+        $lines = array_values($lines);
+
         $firstMember = ! empty($memberNames) ? $memberNames[0] : 'Lead Engineer';
-        $secondMember = count($memberNames) > 1 ? $memberNames[1] : 'Product Owner';
 
-        $summary = "The team convened to review deliverables, sprint velocity, and technical architecture for project '{$projectName}'. Key milestones were agreed upon with aligned next steps.";
+        $decisions = [];
+        $actionItems = [];
+        $risks = [];
+        $nextSteps = [];
 
-        $decisions = [
-            'Confirmed deployment schedule and architectural standards for upcoming sprint.',
-            'Agreed to conduct automated end-to-end regression testing before production release.',
-        ];
+        foreach ($lines as $line) {
+            $lower = mb_strtolower($line);
 
-        $actionItems = [
-            [
-                'title' => 'Finalize core API architecture and database schema validations',
-                'suggested_assignee' => $firstMember,
-                'priority' => 'High',
-            ],
-            [
-                'title' => 'Implement responsive client interfaces matching design system',
-                'suggested_assignee' => $secondMember,
-                'priority' => 'Medium',
-            ],
-            [
-                'title' => 'Conduct automated security and performance audit',
-                'suggested_assignee' => $firstMember,
-                'priority' => 'High',
-            ],
-        ];
+            // 1. Detect decisions
+            if (str_contains($lower, 'decid') || str_contains($lower, 'agree') || str_contains($lower, 'adopt') || str_contains($lower, 'approv') || str_contains($lower, 'قرار') || str_contains($lower, 'اتفق') || str_contains($lower, 'اعتماد')) {
+                $decisions[] = $line;
 
-        $assignedTasks = [
-            $firstMember => 'Backend APIs & Architecture',
-            $secondMember => 'Frontend Components & Review',
-        ];
+                continue;
+            }
 
-        $risks = [
-            'Tight deadline for third-party OAuth service approval.',
-            'Performance load on WebSocket servers during high concurrency.',
-        ];
+            // 2. Detect risks and blockers
+            if (str_contains($lower, 'risk') || str_contains($lower, 'delay') || str_contains($lower, 'block') || str_contains($lower, 'challenge') || str_contains($lower, 'خطر') || str_contains($lower, 'مشكلة') || str_contains($lower, 'تأخير') || str_contains($lower, 'عائق')) {
+                $risks[] = $line;
 
-        $nextSteps = [
-            'Daily standup tomorrow at 10:00 AM.',
-            'Staging deployment and demo scheduled for Thursday.',
-        ];
+                continue;
+            }
 
-        $tokens = (int) max(150, ceil(strlen($transcript) / 4));
+            // 3. Detect next steps
+            if (str_contains($lower, 'next') || str_contains($lower, 'schedule') || str_contains($lower, 'tomorrow') || str_contains($lower, 'upcoming') || str_contains($lower, 'الخطوة') || str_contains($lower, 'القادم') || str_contains($lower, 'غدا') || str_contains($lower, 'موعد')) {
+                $nextSteps[] = $line;
+
+                continue;
+            }
+
+            // 4. Action items (check if any team member is mentioned in the sentence)
+            $matchedMember = null;
+            foreach ($memberNames as $member) {
+                if (stripos($line, $member) !== false) {
+                    $matchedMember = $member;
+                    break;
+                }
+            }
+
+            $priority = (str_contains($lower, 'urgent') || str_contains($lower, 'critical') || str_contains($lower, 'asap') || str_contains($lower, 'عاجل')) ? 'High' : 'Medium';
+
+            $actionItems[] = [
+                'title' => $line,
+                'suggested_assignee' => $matchedMember ?? $firstMember,
+                'priority' => $priority,
+            ];
+        }
+
+        // Sensible fallbacks if specific categories were not found in short transcript
+        if (empty($decisions)) {
+            $decisions = [
+                "Agreed on sprint deliverables and technical standards for '{$projectName}'.",
+            ];
+        }
+
+        if (empty($actionItems)) {
+            $actionItems = [
+                [
+                    'title' => ! empty($lines[0]) ? $lines[0] : "Implement sprint features for '{$projectName}'",
+                    'suggested_assignee' => $firstMember,
+                    'priority' => 'High',
+                ],
+            ];
+        }
+
+        if (empty($risks)) {
+            $risks = [
+                'Tight timeline requiring active cross-functional coordination.',
+            ];
+        }
+
+        if (empty($nextSteps)) {
+            $nextSteps = [
+                'Daily team standup and code review checkpoint.',
+            ];
+        }
+
+        $summary = count($lines) > 0
+            ? "Meeting overview for project '{$projectName}': ".implode(' ', array_slice($lines, 0, 3))
+            : "The team convened to review deliverables, architecture, and milestones for project '{$projectName}'.";
+
+        $assignedTasks = [];
+        foreach ($actionItems as $item) {
+            $assignee = $item['suggested_assignee'] ?? $firstMember;
+            $assignedTasks[$assignee] = $item['title'];
+        }
+
+        $tokens = (int) max(150, (int) ceil(strlen($transcript) / 4));
 
         return [
             'summary' => $summary,
-            'decisions_made' => $decisions,
-            'action_items' => $actionItems,
+            'decisions_made' => array_values(array_slice($decisions, 0, 5)),
+            'action_items' => array_values(array_slice($actionItems, 0, 5)),
             'assigned_tasks' => $assignedTasks,
-            'risks' => $risks,
-            'next_steps' => $nextSteps,
+            'risks' => array_values(array_slice($risks, 0, 4)),
+            'next_steps' => array_values(array_slice($nextSteps, 0, 4)),
             'tokens_used' => $tokens,
         ];
     }
