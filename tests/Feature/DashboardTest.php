@@ -53,29 +53,64 @@ class DashboardTest extends TestCase
             ->assertJsonStructure([
                 'success',
                 'data' => [
-                    'projects' => [
-                        'total',
-                        'active',
-                        'completed',
-                        'average_progress',
+                    'overview' => [
+                        'projects' => [
+                            'total',
+                            'active',
+                            'completed',
+                            'average_progress',
+                        ],
+                        'tasks' => [
+                            'total',
+                            'pending',
+                            'in_progress',
+                            'in_review',
+                            'completed',
+                            'overdue',
+                            'assigned_to_me',
+                            'completion_rate',
+                            'by_priority' => [
+                                'low',
+                                'medium',
+                                'high',
+                                'critical',
+                            ],
+                        ],
+                        'meetings' => [
+                            'upcoming_count',
+                        ],
+                        'teams' => [
+                            'total',
+                        ],
+                    ],
+                    'project_overview' => [
+                        'period',
+                        'group_by',
+                        'data',
+                    ],
+                    'active_projects' => [
+                        'items',
+                        'pagination',
                     ],
                     'tasks' => [
-                        'total',
-                        'assigned_to_me',
-                        'completed',
-                        'overdue',
-                        'by_status',
-                        'by_priority',
-                    ],
-                    'meetings' => [
-                        'upcoming_count',
-                        'upcoming',
+                        'items',
+                        'pagination',
                     ],
                     'teams' => [
-                        'total',
+                        'items',
+                        'pagination',
                     ],
-                    'recent_activity',
-                    'recent_files',
+                    'upcoming_meetings' => [
+                        'items',
+                    ],
+                    'recent_files' => [
+                        'items',
+                        'pagination',
+                    ],
+                    'recent_activity' => [
+                        'items',
+                        'pagination',
+                    ],
                 ],
             ]);
     }
@@ -101,12 +136,13 @@ class DashboardTest extends TestCase
             ->getJson('/api/v1/dashboard');
 
         $response->assertStatus(200)
-            ->assertJsonPath('data.projects.total', 1)
-            ->assertJsonPath('data.tasks.total', 2)
-            ->assertJsonPath('data.tasks.assigned_to_me', 2)
-            ->assertJsonPath('data.tasks.completed', 1)
-            ->assertJsonPath('data.tasks.by_status.Completed', 1)
-            ->assertJsonPath('data.tasks.by_status.Pending', 1);
+            ->assertJsonPath('data.overview.projects.total', 1)
+            ->assertJsonPath('data.overview.tasks.total', 2)
+            ->assertJsonPath('data.overview.tasks.assigned_to_me', 2)
+            ->assertJsonPath('data.overview.tasks.completed', 1)
+            ->assertJsonPath('data.overview.tasks.pending', 1)
+            ->assertJsonPath('data.overview.tasks.by_priority.high', 1)
+            ->assertJsonPath('data.overview.tasks.by_priority.medium', 1);
     }
 
     public function test_dashboard_displays_overdue_tasks_count(): void
@@ -121,7 +157,7 @@ class DashboardTest extends TestCase
             ->getJson('/api/v1/dashboard');
 
         $response->assertStatus(200)
-            ->assertJsonPath('data.tasks.overdue', 1);
+            ->assertJsonPath('data.overview.tasks.overdue', 1);
     }
 
     public function test_dashboard_includes_recent_activity_and_files(): void
@@ -136,7 +172,7 @@ class DashboardTest extends TestCase
             ->getJson('/api/v1/dashboard');
 
         $response->assertStatus(200)
-            ->assertJsonCount(1, 'data.recent_files')
-            ->assertJsonPath('data.recent_files.0.name', 'Architecture_Diagram.png');
+            ->assertJsonCount(1, 'data.recent_files.items')
+            ->assertJsonPath('data.recent_files.items.0.name', 'Architecture_Diagram.png');
     }
 }
