@@ -163,15 +163,10 @@
                 updateStatus(false);
             });
 
-            // Listen to our custom event broadcastAs name: 'message.sent' and '.message.sent'
-            const handleMessage = (data) => {
-                console.log('Received WebSocket message payload:', data);
+            // Listen to our custom event broadcastAs name: 'message.sent'
+            activeChannel.bind('message.sent', (data) => {
                 appendMessage(data);
-            };
-
-            activeChannel.bind('message.sent', handleMessage);
-            activeChannel.bind('.message.sent', handleMessage);
-            activeChannel.bind('App\\Events\\MessageSent', handleMessage);
+            });
         }
 
         async function quickLogin() {
@@ -198,7 +193,17 @@
             }
         }
 
+        const receivedMessageIds = new Set();
+
         function appendMessage(data) {
+            // Prevent duplicate rendering of same message ID
+            if (data.id && receivedMessageIds.has(data.id)) {
+                return;
+            }
+            if (data.id) {
+                receivedMessageIds.add(data.id);
+            }
+
             const list = document.getElementById('messagesList');
             const empty = document.getElementById('emptyState');
             if (empty) empty.remove();
