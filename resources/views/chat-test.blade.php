@@ -163,10 +163,15 @@
                 updateStatus(false);
             });
 
-            // Listen to our custom event broadcastAs name: 'message.sent'
-            activeChannel.bind('message.sent', (data) => {
+            // Listen to our custom event broadcastAs name: 'message.sent' and '.message.sent'
+            const handleMessage = (data) => {
+                console.log('Received WebSocket message payload:', data);
                 appendMessage(data);
-            });
+            };
+
+            activeChannel.bind('message.sent', handleMessage);
+            activeChannel.bind('.message.sent', handleMessage);
+            activeChannel.bind('App\\Events\\MessageSent', handleMessage);
         }
 
         async function quickLogin() {
