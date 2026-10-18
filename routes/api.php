@@ -8,7 +8,9 @@ use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\FileController;
+use App\Http\Controllers\Api\V1\MarkMeetingAttendanceController;
 use App\Http\Controllers\Api\V1\MeetingController;
+use App\Http\Controllers\Api\V1\MeetingSummaryController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectMessageController;
@@ -74,11 +76,11 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('tasks', TaskController::class);
 
         // Meetings & AI Summaries Module
-        Route::patch('meetings/{meeting}/attendance', [MeetingController::class, 'markAttendance']);
-        Route::post('meetings/{meeting}/summary/generate', [MeetingController::class, 'generateSummary']);
-        Route::get('meetings/{meeting}/summary', [MeetingController::class, 'showSummary']);
-        Route::put('meetings/{meeting}/summary', [MeetingController::class, 'updateSummary']);
-        Route::post('meetings/{meeting}/summary/create-tasks', [MeetingController::class, 'createTasksFromSummary']);
+        Route::patch('meetings/{meeting}/attendance', MarkMeetingAttendanceController::class);
+        Route::post('meetings/{meeting}/summary/generate', [MeetingSummaryController::class, 'generate']);
+        Route::get('meetings/{meeting}/summary', [MeetingSummaryController::class, 'show']);
+        Route::put('meetings/{meeting}/summary', [MeetingSummaryController::class, 'update']);
+        Route::post('meetings/{meeting}/summary/create-tasks', [MeetingSummaryController::class, 'createTasks']);
         Route::apiResource('meetings', MeetingController::class);
 
         // File Management Module

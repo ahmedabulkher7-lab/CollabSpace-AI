@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NotificationResource;
 use App\Services\NotificationService;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
+    use ApiResponse;
+
     public function __construct(
         protected NotificationService $notificationService
     ) {}
@@ -27,6 +30,7 @@ class NotificationController extends Controller
 
         return response()->json([
             'success' => true,
+            'message' => 'Notifications retrieved successfully.',
             'data' => NotificationResource::collection($notifications),
             'meta' => [
                 'current_page' => $notifications->currentPage(),
@@ -45,12 +49,9 @@ class NotificationController extends Controller
     {
         $unreadCount = $this->notificationService->getUnreadCount($request->user());
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'unread_count' => $unreadCount,
-            ],
-        ]);
+        return $this->successResponse([
+            'unread_count' => $unreadCount,
+        ], 'Unread count retrieved successfully.');
     }
 
     /**
@@ -60,11 +61,10 @@ class NotificationController extends Controller
     {
         $notification = $this->notificationService->markAsRead($request->user(), $id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification marked as read successfully.',
-            'data' => new NotificationResource($notification),
-        ]);
+        return $this->successResponse(
+            new NotificationResource($notification),
+            'Notification marked as read successfully.'
+        );
     }
 
     /**
@@ -74,13 +74,9 @@ class NotificationController extends Controller
     {
         $count = $this->notificationService->markAllAsRead($request->user());
 
-        return response()->json([
-            'success' => true,
-            'message' => "Successfully marked {$count} notifications as read.",
-            'data' => [
-                'marked_count' => $count,
-            ],
-        ]);
+        return $this->successResponse([
+            'marked_count' => $count,
+        ], "Successfully marked {$count} notifications as read.");
     }
 
     /**
@@ -90,9 +86,9 @@ class NotificationController extends Controller
     {
         $this->notificationService->destroy($request->user(), $id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification deleted successfully.',
-        ]);
+        return $this->successResponse(
+            null,
+            'Notification deleted successfully.'
+        );
     }
 }

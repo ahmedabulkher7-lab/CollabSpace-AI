@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Services\ReportService;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    use ApiResponse;
+
     public function __construct(
         protected ReportService $reportService
     ) {}
@@ -21,10 +24,7 @@ class ReportController extends Controller
         $filters = $request->only(['status', 'priority']);
         $report = $this->reportService->getProjectReports($request->user(), $filters);
 
-        return response()->json([
-            'success' => true,
-            'data' => $report,
-        ]);
+        return $this->successResponse($report, 'Project reports retrieved successfully.');
     }
 
     /**
@@ -35,10 +35,7 @@ class ReportController extends Controller
         $filters = $request->only(['project_id', 'team_id', 'assigned_to']);
         $report = $this->reportService->getTaskReports($request->user(), $filters);
 
-        return response()->json([
-            'success' => true,
-            'data' => $report,
-        ]);
+        return $this->successResponse($report, 'Task reports retrieved successfully.');
     }
 
     /**
@@ -49,10 +46,7 @@ class ReportController extends Controller
         $filters = $request->only(['team_id']);
         $report = $this->reportService->getTeamReports($request->user(), $filters);
 
-        return response()->json([
-            'success' => true,
-            'data' => $report,
-        ]);
+        return $this->successResponse($report, 'Team performance reports retrieved successfully.');
     }
 
     /**
@@ -62,9 +56,6 @@ class ReportController extends Controller
     {
         $report = $this->reportService->getUserReports($request->user(), $id);
 
-        return response()->json([
-            'success' => true,
-            'data' => $report,
-        ]);
+        return $this->successResponse($report, 'User productivity reports retrieved successfully.');
     }
 }
