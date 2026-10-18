@@ -92,8 +92,8 @@ php artisan test --compact
 ```
 
 ### Test Suite Summary:
-- **Total Tests**: `96` passed
-- **Assertions**: `427` passed
+- **Total Tests**: `117` passed
+- **Assertions**: `513` passed
 - **Failures / Errors**: `0` (100% pass rate)
 
 | Feature Test Suite | Tests | Assertions | Description |
@@ -108,6 +108,9 @@ php artisan test --compact
 | `NotificationTest` | 11 | 42 | Notifications listing, unread counts, trigger dispatches |
 | `DashboardTest` | 5 | 36 | Aggregated workspace metrics, overdue task auditing |
 | `AiAssistantTest` | 6 | 26 | Natural language Q&A, context injection, validation |
+| `ReportTest` | 9 | 54 | Project, task, team reports and personal productivity score |
+| `UserManagementTest` | 7 | 18 | Admin user CRUD, role management, account status |
+| `SystemSettingsTest` | 5 | 14 | AI system settings and compliance audit logs API |
 
 ---
 
@@ -127,6 +130,9 @@ A complete, production-ready Postman collection is located at:
 8. `8. Real-Time Project Chat` (List Threaded Messages, Send Message with Mentions, Edit, Delete, Mark Read, Unread Count)
 9. `9. Notifications` (List Notifications, Filter Unread, Unread Count, Mark Read, Mark All Read, Delete)
 10. `10. Dashboard & AI Assistant` (Dashboard Overview, Ask AI Assistant Workspace/Project/Overdue)
+11. `11. Reports Module` (Project Reports, Task Reports, Team Performance, User Productivity Score)
+12. `12. User Management (Admin)` (User CRUD, Role Management, Account Activation)
+13. `13. System Administration & Compliance` (AI Platform Settings, System Audit Logs)
 
 ### How to Import & Run in Postman:
 1. Open Postman -> Click **Import** -> Select `postman/CollabSpace_AI.postman_collection.json`.
