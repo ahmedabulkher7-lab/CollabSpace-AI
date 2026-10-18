@@ -46,13 +46,14 @@ Route::prefix('v1')->group(function () {
             Route::put('/profile', [ProfileController::class, 'update']);
             Route::put('/password', [ProfileController::class, 'changePassword']);
             Route::get('/profile/tasks', [ProfileController::class, 'tasks']);
+            Route::get('/profile/files', [ProfileController::class, 'files']);
         });
     });
 
     // Protected Domain Modules
     Route::middleware('auth:sanctum')->group(function () {
         // Broadcasting Authentication for WebSockets (Sanctum)
-        Broadcast::routes();
+        Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
         // Teams Module
         Route::apiResource('teams', TeamController::class);
