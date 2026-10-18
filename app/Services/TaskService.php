@@ -9,6 +9,7 @@ use App\Models\AuditLog;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskAssignedNotification;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -96,6 +97,11 @@ class TaskService
             // Recalculate project progress
             $task->project->updateProgress();
 
+            // Notify assignee if assigned to someone else
+            if (! empty($task->assigned_to) && $task->assigned_to !== $user->id) {
+                $task->assignee?->notify(new TaskAssignedNotification($task, $task->project, $user));
+            }
+
             AuditLog::create([
                 'user_id' => $user->id,
                 'category' => AuditLogCategory::Task->value,
@@ -133,7 +139,13 @@ class TaskService
             }
 
             $oldProjectId = $task->project_id;
+            $oldAssignedTo = $task->assigned_to;
             $task->update($data);
+
+            // Notify new assignee if changed
+            if (isset($data['assigned_to']) && $task->assigned_to != $oldAssignedTo && ! empty($task->assigned_to) && $task->assigned_to !== $user->id) {
+                $task->assignee?->notify(new TaskAssignedNotification($task, $task->project, $user));
+            }
 
             // Recalculate progress for project(s)
             $task->project->updateProgress();

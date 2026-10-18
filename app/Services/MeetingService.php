@@ -7,6 +7,7 @@ use App\Enums\MeetingStatus;
 use App\Models\AuditLog;
 use App\Models\Meeting;
 use App\Models\User;
+use App\Notifications\MeetingScheduledNotification;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -55,6 +56,14 @@ class MeetingService
 
             if (! empty($participants)) {
                 $meeting->participants()->sync($participants);
+
+                $invitedUsers = User::whereIn('id', $participants)
+                    ->where('id', '!=', $user->id)
+                    ->get();
+
+                foreach ($invitedUsers as $invitedUser) {
+                    $invitedUser->notify(new MeetingScheduledNotification($meeting, $meeting->project, $user));
+                }
             }
 
             AuditLog::create([

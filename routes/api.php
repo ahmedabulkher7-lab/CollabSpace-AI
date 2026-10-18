@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
 use App\Http\Controllers\Api\V1\FileController;
 use App\Http\Controllers\Api\V1\MeetingController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectMessageController;
 use App\Http\Controllers\Api\V1\TaskController;
@@ -81,7 +82,15 @@ Route::prefix('v1')->group(function () {
         Route::put('messages/{message}', [ProjectMessageController::class, 'update']);
         Route::delete('messages/{message}', [ProjectMessageController::class, 'destroy']);
         Route::post('projects/{project}/messages/read', [ProjectMessageController::class, 'markRead']);
+        Route::post('projects/{project}/messages/mark-read', [ProjectMessageController::class, 'markRead']);
         Route::get('projects/{project}/messages/unread-count', [ProjectMessageController::class, 'unreadCount']);
+
+        // Notifications Module
+        Route::get('notifications', [NotificationController::class, 'index']);
+        Route::get('notifications/unread-count', [NotificationController::class, 'unreadCount']);
+        Route::patch('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::delete('notifications/{id}', [NotificationController::class, 'destroy']);
     });
 
 });

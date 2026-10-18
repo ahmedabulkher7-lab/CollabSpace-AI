@@ -8,6 +8,7 @@ use App\Models\AuditLog;
 use App\Models\Project;
 use App\Models\ProjectMessage;
 use App\Models\User;
+use App\Notifications\MentionedInMessageNotification;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -60,6 +61,14 @@ class ChatService
 
             if (! empty($mentions)) {
                 $message->mentions()->sync($mentions);
+
+                $mentionedUsers = User::whereIn('id', $mentions)
+                    ->where('id', '!=', $user->id)
+                    ->get();
+
+                foreach ($mentionedUsers as $mentionedUser) {
+                    $mentionedUser->notify(new MentionedInMessageNotification($message, $project, $user));
+                }
             }
 
             // Automatically mark as read by sender
