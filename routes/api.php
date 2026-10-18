@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\ProjectMessageController;
+use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TeamController;
 use Illuminate\Support\Facades\Route;
@@ -97,6 +98,12 @@ Route::prefix('v1')->group(function () {
         // Dashboard & AI Assistant Module
         Route::get('dashboard', [DashboardController::class, 'index']);
         Route::post('ai/ask', [AiAssistantController::class, 'ask']);
+
+        // Reports Module
+        Route::get('reports/projects', [ReportController::class, 'projects']);
+        Route::get('reports/tasks', [ReportController::class, 'tasks']);
+        Route::get('reports/teams', [ReportController::class, 'teams']);
+        Route::get('reports/users/{id?}', [ReportController::class, 'users']);
     });
 
 });
