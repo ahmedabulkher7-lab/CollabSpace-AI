@@ -27,16 +27,21 @@
 
         <!-- Connection Card -->
         <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 mb-6 backdrop-blur">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-                <div class="md:col-span-3">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                <div class="md:col-span-2">
                     <label class="block text-xs font-medium text-slate-400 mb-1">Project ID</label>
                     <input id="projectId" type="number" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 font-mono">
                 </div>
-                <div class="md:col-span-7">
+                <div class="md:col-span-6">
                     <label class="block text-xs font-medium text-slate-400 mb-1">Bearer Token (from login)</label>
-                    <input id="bearerToken" type="text" placeholder="1|laravel_sanctum_token_here..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 font-mono">
+                    <input id="bearerToken" type="text" placeholder="Paste token or click Auto-Login..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 font-mono">
                 </div>
-                <div class="md:col-span-2 flex items-end">
+                <div class="md:col-span-2">
+                    <button id="quickLoginBtn" onclick="quickLogin()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2 px-3 rounded-lg text-xs transition border border-slate-600">
+                        ⚡ Quick Login
+                    </button>
+                </div>
+                <div class="md:col-span-2">
                     <button id="connectBtn" onclick="toggleConnection()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-lg text-sm transition">
                         Connect
                     </button>
@@ -150,6 +155,30 @@
             activeChannel.bind('message.sent', (data) => {
                 appendMessage(data);
             });
+        }
+
+        async function quickLogin() {
+            const btn = document.getElementById('quickLoginBtn');
+            btn.textContent = "Logging in...";
+            try {
+                const res = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ email: 'admin@collabspace.ai', password: 'password123' })
+                });
+                const data = await res.json();
+                if (data.success && data.data && data.data.token) {
+                    document.getElementById('bearerToken').value = data.data.token;
+                    btn.textContent = "✓ Logged In!";
+                    setTimeout(() => toggleConnection(), 300);
+                } else {
+                    alert('Login failed: ' + (data.message || 'Unknown error'));
+                    btn.textContent = "⚡ Quick Login";
+                }
+            } catch (e) {
+                alert('Login request failed: ' + e.message);
+                btn.textContent = "⚡ Quick Login";
+            }
         }
 
         function appendMessage(data) {
