@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AiAssistantController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\SocialAuthController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\FileController;
 use App\Http\Controllers\Api\V1\MeetingController;
 use App\Http\Controllers\Api\V1\NotificationController;
@@ -91,6 +93,10 @@ Route::prefix('v1')->group(function () {
         Route::patch('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
         Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
         Route::delete('notifications/{id}', [NotificationController::class, 'destroy']);
+
+        // Dashboard & AI Assistant Module
+        Route::get('dashboard', [DashboardController::class, 'index']);
+        Route::post('ai/ask', [AiAssistantController::class, 'ask']);
     });
 
 });
